@@ -11,6 +11,37 @@ def generateRank(eliminationOrder):
         rank[e] = i
     return rank
 
+def contractSubsetNode(tree: Tree, bag: Bag):
+  # if the bag is subset of one of its children
+  for connection in bag.getConnections():
+    connection = tree.getNode(connection)
+
+    # get parent's name
+    parentToString = ""
+    if bag.parent is not None:
+      parentsName = bag.parent.toString()
+
+    if connection.toString() != parentToString and bag.isSubsetOf(connection):
+      # if the bag to be remove is root, change the root to the replacer
+      if bag.name == tree.root.name:
+        tree.root = connection
+      # set the connection parent to be the bag parent
+      connection.parent = bag.parent
+      # change all the bag's connection to connect to the replacer
+      for connection2 in bag.getConnections():
+        if connection2 != connection.name:
+          tree.connectNodes(connection2, connection.name, 1)
+      # remove the bag from the tree
+      tree.removeNode(bag.name)
+      contractSubsetNode(tree, connection)
+      break
+
+def removeSubsetNode(tree: Tree):
+  keys = list(tree.nodes.keys()) 
+  for key in keys:
+    if key in tree.nodes:
+      bag = tree.getNode(key)
+      contractSubsetNode(tree, bag)
 
 def TreeDecomposition(graph: Graph, eliminationOrder: list[int]) -> Tree:
   bagIDCount = 1
@@ -42,8 +73,5 @@ def TreeDecomposition(graph: Graph, eliminationOrder: list[int]) -> Tree:
   while randomNode.parent is not None:
     randomNode = randomNode.parent
   tree.root = randomNode
-
-  # TODO removing bags that are subset of other bag
-  # BFS Search the tree to remove the node that are subset of its connection
   
   return tree
