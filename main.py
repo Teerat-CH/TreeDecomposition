@@ -15,4 +15,4 @@ for line in data:
   graph.connectNodes(int(values[1]), int(values[2]), float(values[3]))
 
 tree = TreeDecomposition(graph, DynamicMinimumDegree(copy.deepcopy(graph)))
-print(tree.getTreeWidth())
+tree.draw()
