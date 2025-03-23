@@ -88,7 +88,6 @@ class Graph:
   
     # TODO rewrite this to pop the lowest degree node from the heap. Check if the popped one has the correct degree from your dict. If yes keep it. If not keep popping.
     while self.heap:
-      print(self.heap)
       degree, nodeID = self.heap[0]
       if nodeID in self.nodes:
         if degree == self.getDegree(nodeID):
