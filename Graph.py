@@ -13,7 +13,8 @@ import matplotlib.pyplot as plt
 class Graph:
   def __init__(self):
     self.nodes = {}
-    self.heap = []
+    # TODO change to orderedDict. Key is the number of degree and value is the set containing node with that number of degree.
+    # self.heap = []
 
   def getSize(self) -> int:
     return len(self.nodes)
@@ -27,8 +28,7 @@ class Graph:
     if nodeID not in self.nodes:
       self.nodes[nodeID] = Node(nodeID)
 
-    # TODO add the node representation to heap with degree = 0
-    heapq.heappush(self.heap, (0, nodeID))
+    # TODO if key = 0 zero does not exist, create one, then add node id to the set.
 
   def removeNode(self, nodeID: int) -> None:
     if nodeID not in self.nodes:
@@ -36,6 +36,8 @@ class Graph:
     for node in self.getNode(nodeID).getConnections():
       self.disconnectNodes(nodeID, node)
     del self.nodes[nodeID]
+
+    # TODO delete the delete node from the set. look up by the current degree which should be 0
 
   def connectNodes(self, initialNodeID: NodeID, finalNodeID: NodeID, distance: Distance) -> None:
     if initialNodeID not in self.nodes:
@@ -45,17 +47,15 @@ class Graph:
     self.getNode(initialNodeID).connect(finalNodeID, distance)
     self.getNode(finalNodeID).connect(initialNodeID, distance)
 
-    # TODO readd all the nodes representation to the heap with their update degree
-    heapq.heappush(self.heap, (self.getDegree(initialNodeID), initialNodeID))
-    heapq.heappush(self.heap, (self.getDegree(finalNodeID), finalNodeID))
+    # TODO for both nodes, look up current degree from the main dict, remove the node from the old set and add it to the old set.
+    # If the new key does not exist, create one (O(logN)).
 
   def disconnectNodes(self, initialNodeID: NodeID, finalNodeID: NodeID) -> None:
     self.getNode(initialNodeID).disconnect(finalNodeID)
     self.getNode(finalNodeID).disconnect(initialNodeID)
 
-    # TODO readd all the nodes representation to the heap with their updated degree
-    heapq.heappush(self.heap, (self.getDegree(initialNodeID), initialNodeID))
-    heapq.heappush(self.heap, (self.getDegree(finalNodeID), finalNodeID))
+    # TODO for both nodes, look up current degree from the main dict, remove the node from the old set and add it to the old set.
+    # If the set is now zero, remove the key (O(logN)).
 
   def getConnections(self, nodeID: NodeID) -> list[NodeID]:
     return self.getNode(nodeID).getConnections()
@@ -84,16 +84,20 @@ class Graph:
   def getLowestDegree(self) -> int:
     if not self.nodes:
         raise ValueError("Graph is empty")
+    
+    # Old method of list search
     # return min(self.nodes.keys(), key=lambda node: self.nodes[node].getDegree())
+
+    # Old method of heap pop
+    # while self.heap:
+    #   degree, nodeID = self.heap[0]
+    #   if nodeID in self.nodes:
+    #     if degree == self.getDegree(nodeID):
+    #       return nodeID
+    #   heapq.heappop(self.heap)
+    # raise ValueError("Graph is empty")
   
-    # TODO rewrite this to pop the lowest degree node from the heap. Check if the popped one has the correct degree from your dict. If yes keep it. If not keep popping.
-    while self.heap:
-      degree, nodeID = self.heap[0]
-      if nodeID in self.nodes:
-        if degree == self.getDegree(nodeID):
-          return nodeID
-      heapq.heappop(self.heap)
-    raise ValueError("Graph is empty")
+    # TODO rewrite this to return one of the node in the set of smallest key.
 
   def draw(self):
     edgeList = []
