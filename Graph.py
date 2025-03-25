@@ -1,5 +1,5 @@
 from Node import Node
-import heapq
+from collections import OrderedDict
 from typing import NewType
 
 Distance = NewType('Distance', float)
@@ -14,7 +14,7 @@ class Graph:
   def __init__(self):
     self.nodes = {}
     # TODO change to orderedDict. Key is the number of degree and value is the set containing node with that number of degree.
-    # self.heap = []
+    self.orderedDict = OrderedDict()
 
   def getSize(self) -> int:
     return len(self.nodes)
@@ -28,7 +28,10 @@ class Graph:
     if nodeID not in self.nodes:
       self.nodes[nodeID] = Node(nodeID)
 
-    # TODO if key = 0 zero does not exist, create one, then add node id to the set.
+      # TODO if key = 0 zero does not exist, create one, then add node id to the set.
+      if (0 not in self.orderedDict):
+        self.orderedDict[0] = set()
+      self.orderedDict[0].add(nodeID)
 
   def removeNode(self, nodeID: int) -> None:
     if nodeID not in self.nodes:
@@ -40,6 +43,9 @@ class Graph:
     # TODO delete the delete node from the set. look up by the current degree which should be 0
 
   def connectNodes(self, initialNodeID: NodeID, finalNodeID: NodeID, distance: Distance) -> None:
+
+    # TODO look up the current degree to see where to look in the set
+
     if initialNodeID not in self.nodes:
       raise Exception('Initial node does not exist')
     if finalNodeID not in self.nodes:
@@ -51,6 +57,9 @@ class Graph:
     # If the new key does not exist, create one (O(logN)).
 
   def disconnectNodes(self, initialNodeID: NodeID, finalNodeID: NodeID) -> None:
+
+    # TODO look up the current degree to see where to look in the set
+    
     self.getNode(initialNodeID).disconnect(finalNodeID)
     self.getNode(finalNodeID).disconnect(initialNodeID)
 
