@@ -43,7 +43,7 @@ def removeSubsetNode(tree: Tree):
       bag = tree.getNode(key)
       contractSubsetNode(tree, bag)
 
-def TreeDecomposition(graph: Graph, eliminationOrder: list[int]) -> Tree:
+def TreeDecomposition(graph: Graph, eliminationOrder: list[int], fully = False) -> Tree:
   bagIDCount = 1
   tree = Tree()
   for nodeID in eliminationOrder:
@@ -52,10 +52,11 @@ def TreeDecomposition(graph: Graph, eliminationOrder: list[int]) -> Tree:
     tree.addNode(bagIDCount, copy.deepcopy(node), nodeID)
     bagIDCount += 1
     # strongly connect node's connections
-    # graph.connectAll(node.getConnections())
+    graph.connectAll(node.getConnections())
     # remove that node from the graph
     graph.removeNode(nodeID)
 
+  # Connecting the generated bags
   rank = generateRank(eliminationOrder) # for faster checking which bag got eliminate first
 
   # Connecting the generated bags
@@ -68,10 +69,14 @@ def TreeDecomposition(graph: Graph, eliminationOrder: list[int]) -> Tree:
       tree.connectNodes(rank[bag.head] + 1, eliminateFirstRank + 1, 1)
       tree.nodes[rank[bag.head] + 1].parent = tree.nodes[eliminateFirstRank + 1]
 
-  # assigned the root to the tree
-  randomNode = tree.nodes[1] # find the root by traversing through parents of each node
-  while randomNode.parent is not None:
-    randomNode = randomNode.parent
-  tree.root = randomNode
-  
+  if fully: # to fully form a final tree decomposition. This is not necessary to get a treewidth. 
+  # TODO: Need to look into this part more as it might not work in the case that we have a forest rather than a tree.
+    randomNode = tree.nodes[1] # find the root by traversing through parents of each node
+    while randomNode.parent is not None:
+      randomNode = randomNode.parent
+    tree.root = randomNode
+
+    # remove node that are subset of its connections
+    removeSubsetNode(tree)
+
   return tree
