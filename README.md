@@ -74,11 +74,7 @@ print(tree.root.toString()) # .root return the node object
 ```
 ( 5, 9, 7, 8 )
 
-## Code Intuition
-- 
-## Additional Resources
-- 
-## Detailed Code Explanation
+## Code Explanation/Intuition
 ### `Node` Class
 A class representing a node. Keep track of its own connections.
 #### Important Methods
@@ -105,3 +101,56 @@ A class inherited from the class `node` representing a node of a tree. Save a su
 A class representing the tree that is a result of tree decomposition. This tree will be constructed in the tree decomposition function.
 #### Important Methods
 - `addNode(ID, processNode, processNodeID)`: This is to add a new bag to the graph. It takes in a node object as one of the arguments, as we want to save it as one of the properties and also to update the tree treewidth.
+
+### `EliminationOrder`
+A file containing different functions to generate elimination orders.
+- `RandomEliminationOrder`: return a list of all node IDs in random order.
+- `DynamicMinimumDegree`: return a list of all node IDs in ascending order of degree at each time step. This means the first item is the node with the lowest degree at the start, the second item is the node with the lowest degree after we process the first node, the third item is the node with the lowest degree after we process the first and the second node, and so on.
+
+### `TreeDecomposition`
+A file containing `TreeDecomposition` function and its helpers.
+
+Pseudo Code
+```
+1. Initialize T as an empty tree
+2. For each node v in the elimination order π:
+    a. Form a bag B_v containing v and all of its neighbors in G
+    b. Add B_v to the tree T
+    c. Connect all neighbors of v to form a clique in G
+    d. Remove v from G
+
+3. For each bag B in T:
+    a. Identify the node u in B that appears earliest in the elimination order π
+    b. Let B_u be the bag formed when processing node u
+    c. Set B_u as the parent of B in the tree T
+
+4. Select a random node in T and traverse up its parent chain
+   until reaching a node with no parent; set it as the root of T
+
+5. Traverse T and remove any bag that is a subset of another bag in the tree
+```
+
+- `removeSubsetNode(Tree)`: Loop through all the bags in the tree and call `contractSubsetNode` on it.
+- `contractSubsetNode(tree: Tree, bag: Bag)`: This function recursively contracts the node if one is the subset of the other and vice versa.
+
+## Additional Resources
+- Computational Topology (Jeff Erickson) - Treewidth
+    - https://jeffe.cs.illinois.edu/teaching/comptop/2009/notes/treewidth.pdf
+    - This is the main paper of this project. We follow the definition and the algorithm from this paper.
+- An Experimental Study of the Treewidth of
+Real-World Graph Data (Maniu et al. 2019)
+    - https://arxiv.org/pdf/1901.06862 
+    - https://github.com/smaniu/treewidth/
+    - We compare our implementation result with the algorithm from this paper.
+- Metaheuristic Algorithms and Tree Decomposition (Hammerl et al. 2012)
+    - https://www.dbai.tuwien.ac.at/staff/musliu/TreeDecompChap.pdf
+    - Another paper that help me understand tree decomposition more deeply.
+- A Theorist’s Toolkit (Ryan O’Donnell) - Treewidth
+    - https://www.cs.cmu.edu/~odonnell/toolkit13/lecture17.pdf
+    - This along with the paper above were helpful in understanding the tree decomposition algorithm.
+- Real Datasets for Spatial Databases: Road Networks and Points of Interest (Li. 2005)
+    - https://users.cs.utah.edu/~lifeifei/SpatialDataset.htm
+    - This is the main dataset that we use to test our algorithm.
+- Some additional road networks that we can use to test our algorithm.
+    - https://networkrepository.com/road.php
+    - https://www.diag.uniroma1.it/challenge9/download.shtml
