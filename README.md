@@ -147,7 +147,7 @@ Real-World Graph Data (Maniu et al. 2019)
     - Another paper that help me understand tree decomposition more deeply.
 - A Theorist’s Toolkit (Ryan O’Donnell) - Treewidth
     - https://www.cs.cmu.edu/~odonnell/toolkit13/lecture17.pdf
-    - This along with the paper above were helpful in understanding the tree decomposition algorithm.
+    - This along with the paper above were helpful in helping me understand the tree decomposition algorithm.
 - Real Datasets for Spatial Databases: Road Networks and Points of Interest (Li. 2005)
     - https://users.cs.utah.edu/~lifeifei/SpatialDataset.htm
     - This is the main dataset that we use to test our algorithm.
